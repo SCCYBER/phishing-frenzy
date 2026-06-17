@@ -2,13 +2,13 @@ const GAME_SECONDS = 120;
 const MAX_LIVES = 3;
 
 const jobLadder = [
-  "INTERN",
-  "TRAINEE",
-  "ANALYST",
-  "ENGINEER",
-  "SENIOR ENGINEER",
-  "SOC LEAD",
-  "CISO"
+  { role: "INTERN", score: 0 },
+  { role: "TRAINEE", score: 500 },
+  { role: "ANALYST", score: 1000 },
+  { role: "ENGINEER", score: 1800 },
+  { role: "SENIOR ENGINEER", score: 2700 },
+  { role: "SOC LEAD", score: 3800 },
+  { role: "CISO", score: 5000 }
 ];
 
 const emails = [
@@ -153,7 +153,6 @@ let processed = 0;
 let correct = 0;
 let wrong = 0;
 let threatsStopped = 0;
-let ladderIndex = 0;
 let lives = MAX_LIVES;
 let gameOver = false;
 let lockedDecision = false;
@@ -199,11 +198,16 @@ function formatTime(seconds){
 }
 
 function currentRole(){
-  return jobLadder[Math.min(ladderIndex, jobLadder.length - 1)];
+  return jobLadder.reduce((current, step) => score >= step.score ? step : current, jobLadder[0]).role;
+}
+
+function currentRoleIndex(){
+  return jobLadder.reduce((current, step, index) => score >= step.score ? index : current, 0);
 }
 
 function renderLadder(){
-  ladder.innerHTML = jobLadder.map((role, index) => `<div class="ladder-step ${index === ladderIndex ? "active" : ""}">${role}</div>`).join("");
+  const activeIndex = currentRoleIndex();
+  ladder.innerHTML = jobLadder.map((step, index) => `<div class="ladder-step ${index === activeIndex ? "active" : ""}">${step.role}<br>${step.score}</div>`).join("");
 }
 
 function livesDisplay(){
@@ -277,7 +281,6 @@ function decide(choice){
     correct += 1;
     if(current.type !== "safe") threatsStopped += 1;
     score += current.type === "phishing" ? 300 : current.type === "suspicious" ? 220 : 150;
-    ladderIndex = Math.min(jobLadder.length - 1, ladderIndex + 1);
     feedbackBox.textContent = `Correct. ${current.lesson}`;
     feedbackBox.className = "feedback good";
     updateHud();
@@ -310,7 +313,6 @@ function startGame(){
   correct = 0;
   wrong = 0;
   threatsStopped = 0;
-  ladderIndex = 0;
   lives = MAX_LIVES;
   gameOver = false;
   lockedDecision = false;
@@ -357,7 +359,7 @@ function endGame(breached){
   `;
   endLesson.textContent = breached
     ? "The breach happened after three poor decisions. Check sender domains, links, attachments and context before deciding."
-    : `You survived the 2 minute investigation and finished as ${role}. The longer you investigate correctly, the higher your cybersecurity role.`;
+    : `You survived the 2 minute investigation and finished as ${role}. The higher your score, the higher your cybersecurity role.`;
 }
 
 startBtn.addEventListener("click", startGame);
