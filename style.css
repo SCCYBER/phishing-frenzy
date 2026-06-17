@@ -260,22 +260,57 @@ h1{font-size:clamp(26px,4vw,52px)}
 
 .wrong-skull-overlay{
   position:fixed;
-  inset:0;
+  top:16px;
+  left:50%;
+  transform:translateX(-50%) translateY(-120%);
   z-index:9999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:radial-gradient(circle,rgba(255,59,107,.18),rgba(9,2,22,.97) 60%);
+  display:block;
+  pointer-events:none;
+  opacity:0;
+  width:min(92vw, 520px);
+  background:linear-gradient(90deg,rgba(70,10,28,.98),rgba(120,12,45,.98));
+  border:2px solid var(--red);
+  border-radius:16px;
+  box-shadow:0 0 28px rgba(255,59,107,.5);
+  padding:12px 16px;
 }
 
-.wrong-skull-overlay.active{display:flex;animation:redFlash .45s steps(2) 4}
+.wrong-skull-overlay.active{
+  opacity:1;
+  animation:breachToast 1.05s ease forwards;
+}
 
-.wrong-skull-inner{text-align:center}
-.wrong-skull-icon{font-size:140px;color:var(--red);text-shadow:0 0 25px var(--red)}
-.wrong-skull-text,.wrong-skull-laugh{font-family:'Press Start 2P', cursive;color:var(--red);line-height:1.8;text-shadow:0 0 14px var(--red)}
-.wrong-skull-laugh{color:#fff;font-size:14px}
+.wrong-skull-inner{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  text-align:center;
+}
 
-@keyframes redFlash{0%,100%{opacity:1}50%{opacity:.35}}
+.wrong-skull-icon{
+  font-size:36px;
+  color:var(--red);
+  text-shadow:0 0 16px var(--red);
+}
+
+.wrong-skull-text,
+.wrong-skull-laugh{
+  font-family:'Press Start 2P', cursive;
+  color:#fff;
+  line-height:1.6;
+  text-shadow:0 0 10px var(--red);
+  font-size:9px;
+}
+
+.wrong-skull-laugh{color:var(--amber)}
+
+@keyframes breachToast{
+  0%{opacity:0;transform:translateX(-50%) translateY(-120%)}
+  15%{opacity:1;transform:translateX(-50%) translateY(0)}
+  70%{opacity:1;transform:translateX(-50%) translateY(0)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-120%)}
+}
 
 @media(max-width:900px){
   .hud{grid-template-columns:repeat(2,1fr)}
@@ -284,5 +319,7 @@ h1{font-size:clamp(26px,4vw,52px)}
   .email-row{grid-template-columns:1fr}
   .ladder{grid-template-columns:repeat(2,1fr)}
   .start-screen,.end-screen{min-height:560px}
-  .wrong-skull-icon{font-size:95px}
+  .wrong-skull-inner{gap:8px}
+  .wrong-skull-icon{font-size:28px}
+  .wrong-skull-text,.wrong-skull-laugh{font-size:7px}
 }
