@@ -181,6 +181,7 @@ const endStats = document.getElementById("endStats");
 const endLesson = document.getElementById("endLesson");
 const ladder = document.getElementById("ladder");
 const wrongSkullOverlay = document.getElementById("wrongSkullOverlay");
+const heartLoss = document.getElementById("heartLoss");
 
 function shuffle(items){
   const copy = [...items];
@@ -206,13 +207,15 @@ function renderLadder(){
 }
 
 function livesDisplay(){
-  return "♥".repeat(lives) + "♡".repeat(MAX_LIVES - lives);
+  const full = Array.from({length:lives}, () => `<span class="life-full">♥</span>`).join(" ");
+  const empty = Array.from({length:MAX_LIVES - lives}, () => `<span class="life-empty">♥</span>`).join(" ");
+  return `${full}${full && empty ? " " : ""}${empty}`;
 }
 
 function updateHud(){
   timerBox.textContent = `TIME: ${formatTime(timeLeft)}`;
   scoreBox.textContent = `SCORE: ${score}`;
-  rankHudBox.textContent = `ROLE: ${currentRole()} · ${livesDisplay()}`;
+  rankHudBox.innerHTML = `ROLE: ${currentRole()} · ${livesDisplay()}`;
   countBox.textContent = `EMAILS: ${processed}`;
   renderLadder();
 }
@@ -255,6 +258,14 @@ function triggerBreachVisual(){
   }, 1100);
 }
 
+function triggerHeartLoss(){
+  if(!heartLoss) return;
+  heartLoss.classList.remove("active");
+  void heartLoss.offsetWidth;
+  heartLoss.classList.add("active");
+  setTimeout(() => heartLoss.classList.remove("active"), 1000);
+}
+
 function decide(choice){
   if(gameOver || !current || lockedDecision) return;
   lockedDecision = true;
@@ -277,17 +288,18 @@ function decide(choice){
   wrong += 1;
   lives = Math.max(0, lives - 1);
   score = Math.max(0, score - 100);
-  feedbackBox.textContent = `Wrong. This was ${current.type.toUpperCase()}. ${current.lesson} Lives remaining: ${livesDisplay()}`;
+  feedbackBox.innerHTML = `Wrong. This was ${current.type.toUpperCase()}. ${current.lesson} Lives remaining: ${livesDisplay()}`;
   feedbackBox.className = "feedback bad";
   updateHud();
-  triggerBreachVisual();
+  triggerHeartLoss();
+  setTimeout(triggerBreachVisual, 280);
 
   if(lives <= 0){
-    setTimeout(() => endGame(true), 1150);
+    setTimeout(() => endGame(true), 1250);
     return;
   }
 
-  setTimeout(nextEmail, 1200);
+  setTimeout(nextEmail, 1250);
 }
 
 function startGame(){
@@ -303,6 +315,7 @@ function startGame(){
   gameOver = false;
   lockedDecision = false;
   wrongSkullOverlay.classList.remove("active");
+  if(heartLoss) heartLoss.classList.remove("active");
 
   startScreen.classList.add("hidden");
   endScreen.classList.add("hidden");
@@ -323,6 +336,7 @@ function endGame(breached){
   gameOver = true;
   clearInterval(timer);
   wrongSkullOverlay.classList.remove("active");
+  if(heartLoss) heartLoss.classList.remove("active");
   gameScreen.classList.add("hidden");
   endScreen.classList.remove("hidden");
 
