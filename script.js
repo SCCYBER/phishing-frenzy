@@ -3,145 +3,53 @@ const MAX_LIVES = 3;
 
 const jobLadder = [
   { role: "INTERN", score: 0 },
-  { role: "TRAINEE", score: 500 },
-  { role: "ANALYST", score: 1000 },
-  { role: "ENGINEER", score: 1800 },
-  { role: "SENIOR ENGINEER", score: 2700 },
-  { role: "SOC LEAD", score: 3800 },
-  { role: "CISO", score: 5000 }
+  { role: "TRAINEE", score: 400 },
+  { role: "ANALYST", score: 900 },
+  { role: "ENGINEER", score: 1500 },
+  { role: "SENIOR ENGINEER", score: 2200 },
+  { role: "SOC LEAD", score: 3000 },
+  { role: "CISO", score: 4000 }
 ];
 
 const emails = [
-  {
-    type: "phishing",
-    category: "PASSWORD RESET",
-    from: "Microsoft Support <support@microsoft-login-secure.net>",
-    reply: "reset@microsoft-login-secure.net",
-    subject: "Password Expiring Today",
-    body: "Your Microsoft 365 password expires today. Verify your account now to avoid losing access.\n\nClick here to keep your mailbox active.",
-    sender: "Lookalike domain. Real Microsoft emails do not come from microsoft-login-secure.net.",
-    link: "Link points to microsoft-login-secure.net/auth rather than a real Microsoft domain.",
-    attachment: "No attachment.",
-    context: "Urgency plus credential request is a strong phishing pattern.",
-    lesson: "Lookalike domains and urgent login requests are major phishing indicators."
-  },
-  {
-    type: "suspicious",
-    category: "INVOICE",
-    from: "Accounts <billing@northwest-supplies.co.uk>",
-    reply: "billing@northwest-supplies.co.uk",
-    subject: "Updated invoice attached",
-    body: "Hi, please see the updated invoice attached. The bank details have changed from this month. Please process today.",
-    sender: "Sender domain appears plausible but should be verified.",
-    link: "No links found.",
-    attachment: "Attachment: invoice_update.docm. Macro enabled documents are risky.",
-    context: "Bank detail changes should be verified using a known trusted contact.",
-    lesson: "Supplier payment changes should never be trusted from email alone."
-  },
-  {
-    type: "safe",
-    category: "MEETING",
-    from: "Sarah Ahmed <sarah.ahmed@sccyber.co.uk>",
-    reply: "sarah.ahmed@sccyber.co.uk",
-    subject: "Workshop agenda for tomorrow",
-    body: "Hi, I have attached the final running order for tomorrow's awareness workshop. No action needed tonight.",
-    sender: "Known internal sender using the expected domain.",
-    link: "No external links found.",
-    attachment: "Attachment: agenda.pdf. Standard low risk document type.",
-    context: "Message context is expected and does not pressure the recipient.",
-    lesson: "Safe emails usually match expected sender, context and behaviour."
-  },
-  {
-    type: "phishing",
-    category: "DOCUSHARE",
-    from: "DocuSign <secure@docusign.documents-review.com>",
-    reply: "secure@docusign.documents-review.com",
-    subject: "Document waiting for signature",
-    body: "A confidential document is waiting for your signature. Review within 2 hours or the request will expire.",
-    sender: "Brand impersonation with a non official domain.",
-    link: "Link goes to documents-review.com/signin, not DocuSign.",
-    attachment: "No attachment.",
-    context: "Urgency and fake brand domain make this phishing.",
-    lesson: "Brand impersonation often relies on domains that look close but are not official."
-  },
-  {
-    type: "safe",
-    category: "DELIVERY",
-    from: "Royal Mail <no-reply@royalmail.com>",
-    reply: "no-reply@royalmail.com",
-    subject: "Your parcel is out for delivery",
-    body: "Your parcel is due today. Track using your Royal Mail account or app.",
-    sender: "Sender domain matches the service.",
-    link: "No direct payment link in this email.",
-    attachment: "No attachment.",
-    context: "No pressure, no payment request, and no credential request.",
-    lesson: "Not every branded email is phishing. Context and destination matter."
-  },
-  {
-    type: "phishing",
-    category: "QR PHISHING",
-    from: "IT Service Desk <it-helpdesk@sccyber-support.com>",
-    reply: "support@sccyber-support.com",
-    subject: "Scan QR code to keep Teams active",
-    body: "Your Teams access requires reactivation. Scan the QR code and sign in to continue using your account.",
-    sender: "External support domain pretending to be internal IT.",
-    link: "QR code destination resolves to sccyber-support.com/login.",
-    attachment: "Embedded QR image found.",
-    context: "QR codes can hide malicious links from normal email checks.",
-    lesson: "QR phishing hides the real destination until the user scans it."
-  },
-  {
-    type: "suspicious",
-    category: "CEO REQUEST",
-    from: "Sham Chohan <sham.chohan@sc-cyber.co.uk>",
-    reply: "urgent.finance@gmail.com",
-    subject: "Quick favour before my meeting",
-    body: "Can you buy £500 of gift cards for a client event? I am tied up and need this done quickly.",
-    sender: "Display name looks familiar but reply to address is Gmail and not company mail.",
-    link: "No links found.",
-    attachment: "No attachment.",
-    context: "Gift card pressure request should be verified out of band.",
-    lesson: "Business email compromise often abuses authority and urgency."
-  },
-  {
-    type: "safe",
-    category: "HR",
-    from: "HR Team <hr@sccyber.co.uk>",
-    reply: "hr@sccyber.co.uk",
-    subject: "Updated leave policy",
-    body: "The updated annual leave policy is now available on the staff portal. Please read when you have time.",
-    sender: "Known internal domain.",
-    link: "Mentions staff portal but does not force a direct login link.",
-    attachment: "No attachment.",
-    context: "Normal tone, no urgency, expected HR update.",
-    lesson: "Legitimate internal updates are usually calm, expected and verifiable."
-  },
-  {
-    type: "phishing",
-    category: "MFA FATIGUE",
-    from: "Security Alert <mfa-alert@identity-protect.net>",
-    reply: "mfa-alert@identity-protect.net",
-    subject: "MFA failed. Approve request to stop account lock",
-    body: "Multiple sign in attempts detected. Approve the pending request to prevent your account being locked.",
-    sender: "Third party domain pretending to handle identity alerts.",
-    link: "Link opens fake MFA approval page.",
-    attachment: "No attachment.",
-    context: "Attackers may pressure users into approving MFA prompts.",
-    lesson: "Never approve unexpected MFA prompts. Report them immediately."
-  },
-  {
-    type: "suspicious",
-    category: "CLOUD FILE",
-    from: "Tom Richards <tom.richards@partnerfirm.co.uk>",
-    reply: "tom.richards@partnerfirm.co.uk",
-    subject: "Shared file for review",
-    body: "Hi, sharing the file we discussed. It asks you to sign in before download.",
-    sender: "Known partner, but still requires verification because sign in is requested.",
-    link: "Link goes to files.partnerfirm-share.com, not the usual Microsoft or Google portal.",
-    attachment: "No attachment.",
-    context: "Could be legitimate, but sign in via unusual portal makes it suspicious.",
-    lesson: "Known sender does not automatically mean safe. Check the destination and context."
-  }
+  {type:"safe",difficulty:"easy",category:"MEETING",from:"Sarah Ahmed <sarah.ahmed@sccyber.co.uk>",reply:"sarah.ahmed@sccyber.co.uk",subject:"Workshop agenda for tomorrow",body:"Hi, I have attached the final running order for tomorrow's awareness workshop. No urgent action needed.",sender:"Known internal sender using the expected domain.",link:"No external links found.",attachment:"Attachment: agenda.pdf. Standard low risk document type.",context:"Expected message, normal tone and no pressure.",lesson:"Safe emails usually match sender, context and behaviour."},
+  {type:"safe",difficulty:"easy",category:"HR",from:"HR Team <hr@sccyber.co.uk>",reply:"hr@sccyber.co.uk",subject:"Updated leave policy",body:"The updated annual leave policy is now available on the staff portal. Please read when you have time.",sender:"Known internal domain.",link:"No forced login link in the email.",attachment:"No attachment.",context:"Calm internal update with no urgency.",lesson:"Legitimate internal updates are usually calm and verifiable."},
+  {type:"safe",difficulty:"easy",category:"DELIVERY",from:"Royal Mail <no-reply@royalmail.com>",reply:"no-reply@royalmail.com",subject:"Your parcel is out for delivery",body:"Your parcel is due today. Track using your Royal Mail account or app.",sender:"Sender domain matches the service.",link:"No direct payment link in this email.",attachment:"No attachment.",context:"No payment request and no credential request.",lesson:"Not every branded email is phishing. Check context and destination."},
+  {type:"safe",difficulty:"easy",category:"CALENDAR",from:"Google Calendar <calendar-notification@google.com>",reply:"calendar-notification@google.com",subject:"Reminder: Cyber awareness session",body:"This is a reminder for your scheduled cyber awareness session tomorrow at 10:00.",sender:"Legitimate Google notification address.",link:"No unusual link or sign in demand.",attachment:"No attachment.",context:"Expected calendar reminder.",lesson:"Expected notifications with no pressure are usually lower risk."},
+  {type:"safe",difficulty:"medium",category:"SUPPLIER",from:"Aisha Khan <aisha@trustedtraining.co.uk>",reply:"aisha@trustedtraining.co.uk",subject:"Slides from today's session",body:"Hi, as promised, here are the slides from today's session. Thanks again.",sender:"Known supplier domain.",link:"No link found.",attachment:"Attachment: workshop-slides.pdf.",context:"Matches a recent interaction and expected file type.",lesson:"Known context makes an email safer, but attachments should still be checked."},
+  {type:"safe",difficulty:"medium",category:"IT UPDATE",from:"IT Service Desk <servicedesk@sccyber.co.uk>",reply:"servicedesk@sccyber.co.uk",subject:"Planned maintenance this Friday",body:"Maintenance will take place Friday from 18:00 to 19:00. No action is required.",sender:"Internal service desk domain.",link:"No login link included.",attachment:"No attachment.",context:"No pressure and no credential request.",lesson:"IT updates should not normally ask for passwords or urgent sign ins."},
+  {type:"safe",difficulty:"medium",category:"INVOICE",from:"Accounts <accounts@knownsupplier.co.uk>",reply:"accounts@knownsupplier.co.uk",subject:"Invoice for approved order",body:"Please find attached the invoice for the order approved last week. Bank details remain unchanged.",sender:"Known supplier domain.",link:"No links found.",attachment:"Attachment: invoice.pdf.",context:"Expected invoice and no bank detail change.",lesson:"Expected invoices can be safe when supplier and context match."},
+  {type:"safe",difficulty:"medium",category:"TEAMS",from:"Microsoft Teams <noreply@email.teams.microsoft.com>",reply:"noreply@email.teams.microsoft.com",subject:"You were mentioned in a Teams chat",body:"You were mentioned by a colleague in Microsoft Teams.",sender:"Recognised Microsoft Teams notification domain.",link:"Standard Teams notification path.",attachment:"No attachment.",context:"Normal notification with no unusual request.",lesson:"Legitimate notifications should still be opened through official apps where possible."},
+  {type:"safe",difficulty:"hard",category:"PARTNER FILE",from:"Tom Richards <tom.richards@partnerfirm.co.uk>",reply:"tom.richards@partnerfirm.co.uk",subject:"Updated contract wording",body:"Hi, attaching the updated contract wording from our call. No signature needed yet.",sender:"Known partner sender.",link:"No external link.",attachment:"Attachment: contract-draft.pdf.",context:"Expected after a call and no pressure.",lesson:"Context is important. A known sender and expected document reduces risk."},
+  {type:"safe",difficulty:"hard",category:"FINANCE",from:"Finance <finance@sccyber.co.uk>",reply:"finance@sccyber.co.uk",subject:"Payment run completed",body:"The payment run has completed. The report is in the finance folder as usual.",sender:"Internal finance sender.",link:"No direct link included.",attachment:"No attachment.",context:"Normal operational update.",lesson:"Safe finance emails avoid sudden changes and unusual payment requests."},
+  {type:"safe",difficulty:"hard",category:"SECURITY",from:"Security Team <security@sccyber.co.uk>",reply:"security@sccyber.co.uk",subject:"Monthly security reminder",body:"Reminder: report suspicious emails using the report button. Do not forward suspicious emails to personal accounts.",sender:"Internal security sender.",link:"No external link.",attachment:"No attachment.",context:"Awareness reminder with safe instruction.",lesson:"Security reminders should direct people to approved internal processes."},
+  {type:"safe",difficulty:"hard",category:"CLIENT",from:"Aman <aman@mietschool.org>",reply:"aman@mietschool.org",subject:"Network report meeting",body:"Thanks for the report. Can we discuss the board feedback tomorrow afternoon?",sender:"Known client domain.",link:"No links found.",attachment:"No attachment.",context:"Matches expected business conversation.",lesson:"Known ongoing conversations are safer but still need normal checks."},
+
+  {type:"suspicious",difficulty:"easy",category:"INVOICE",from:"Accounts <billing@northwest-supplies.co.uk>",reply:"billing@northwest-supplies.co.uk",subject:"Updated invoice attached",body:"Please see the updated invoice attached. The bank details have changed. Please process today.",sender:"Sender domain appears plausible but should be verified.",link:"No links found.",attachment:"Attachment: invoice_update.docm. Macro enabled documents are risky.",context:"Bank detail changes should be verified using a trusted known contact.",lesson:"Supplier payment changes should never be trusted from email alone."},
+  {type:"suspicious",difficulty:"easy",category:"CEO REQUEST",from:"Sham Chohan <sham.chohan@sc-cyber.co.uk>",reply:"urgent.finance@gmail.com",subject:"Quick favour before my meeting",body:"Can you buy £500 of gift cards for a client event? I am tied up and need this done quickly.",sender:"Display name looks familiar but reply address is Gmail.",link:"No links found.",attachment:"No attachment.",context:"Gift card request with urgency should be verified out of band.",lesson:"Business email compromise often abuses authority and urgency."},
+  {type:"suspicious",difficulty:"easy",category:"CLOUD FILE",from:"Tom Richards <tom.richards@partnerfirm.co.uk>",reply:"tom.richards@partnerfirm.co.uk",subject:"Shared file for review",body:"Hi, sharing the file we discussed. It asks you to sign in before download.",sender:"Known partner, but sign in request still needs caution.",link:"Link goes to files.partnerfirm-share.com, not the usual portal.",attachment:"No attachment.",context:"Could be legitimate but unusual portal makes it suspicious.",lesson:"Known sender does not automatically mean safe. Check destination and context."},
+  {type:"suspicious",difficulty:"easy",category:"PAYMENT",from:"Supplier Finance <finance@trustedvendor.co.uk>",reply:"finance@trustedvendor.co.uk",subject:"Payment details update",body:"Our bank account has changed. Please use the new account in the attached document.",sender:"Domain looks normal but payment detail change is high risk.",link:"No links found.",attachment:"Attachment: new_bank_details.pdf.",context:"Financial detail changes require independent verification.",lesson:"Bank detail changes should trigger verification, even from a known supplier."},
+  {type:"suspicious",difficulty:"medium",category:"SHAREPOINT",from:"Alex Morgan <alex@partnerfirm.co.uk>",reply:"alex@partnerfirm.co.uk",subject:"SharePoint document",body:"I have shared the file. It may ask you to sign in again because permissions changed.",sender:"Known partner but unexpected reauthentication request.",link:"Link goes to partnerfirm-fileshare.co.uk.",attachment:"No attachment.",context:"Unexpected sign in requests from file links are suspicious.",lesson:"Unexpected reauthentication should be checked before entering credentials."},
+  {type:"suspicious",difficulty:"medium",category:"ATTACHMENT",from:"Recruitment <jobs@techrecruiter.co.uk>",reply:"jobs@techrecruiter.co.uk",subject:"Candidate CV",body:"Please review this urgent candidate CV before 3pm.",sender:"External recruiter not previously verified.",link:"No links found.",attachment:"Attachment: candidate_cv.zip.",context:"ZIP attachments from unknown senders are risky.",lesson:"Compressed attachments can hide malware and should be handled carefully."},
+  {type:"suspicious",difficulty:"medium",category:"HR FORM",from:"People Team <people@sccyber.co.uk>",reply:"people@sccyber.co.uk",subject:"Payroll confirmation",body:"Please confirm your payroll information using the attached spreadsheet.",sender:"Internal sender appears correct.",link:"No links found.",attachment:"Attachment: payroll-confirmation.xlsm.",context:"Macro enabled spreadsheet requesting payroll data is risky.",lesson:"Sensitive data requests and macro files should be treated with caution."},
+  {type:"suspicious",difficulty:"medium",category:"CLIENT PORTAL",from:"Client Portal <notify@clientportal-mail.com>",reply:"notify@clientportal-mail.com",subject:"New message from client",body:"A client has sent a confidential message. Sign in to view.",sender:"Generic portal domain, not clearly tied to the client.",link:"Link destination does not clearly match known portal.",attachment:"No attachment.",context:"Could be legitimate but requires verification.",lesson:"Unfamiliar portals asking for sign in should be verified first."},
+  {type:"suspicious",difficulty:"hard",category:"THREAD HIJACK",from:"Aisha Khan <aisha@trustedtraining.co.uk>",reply:"aisha@trustedtraining.co.uk",subject:"Re: Workshop dates",body:"Following on from this, can you open the attached file and confirm today?",sender:"Known sender in an existing thread.",link:"No links found.",attachment:"Attachment: schedule_update.iso.",context:"Thread context is real, but ISO file is unusual and risky.",lesson:"Thread hijacking can be convincing because it abuses real conversations."},
+  {type:"suspicious",difficulty:"hard",category:"AI EMAIL",from:"Operations <ops@clientsite.org>",reply:"ops@clientsite.org",subject:"Urgent infrastructure confirmation",body:"Your expertise is needed. Please urgently confirm the admin access list before the board meeting.",sender:"Realistic sender but request involves access information.",link:"No links found.",attachment:"Attachment: access_list.xlsx.",context:"Sensitive access information should not be shared from email pressure alone.",lesson:"AI written emails can sound polished. The request itself still needs checking."},
+  {type:"suspicious",difficulty:"hard",category:"MFA",from:"Identity Team <identity@sccyber.co.uk>",reply:"identity@sccyber.co.uk",subject:"MFA reset request",body:"We have a pending MFA reset for your account. Reply YES if this was you.",sender:"Internal looking sender.",link:"No links found.",attachment:"No attachment.",context:"MFA reset should go through approved internal processes, not email replies.",lesson:"Identity changes should be verified through official workflows."},
+  {type:"suspicious",difficulty:"hard",category:"LEGAL",from:"Legal Notice <notice@legalmail-service.co.uk>",reply:"notice@legalmail-service.co.uk",subject:"Document served",body:"A legal document has been served. Access is limited to 24 hours.",sender:"Generic legal notification service.",link:"Link requires sign in to view document.",attachment:"No attachment.",context:"Legal pressure and sign in request make this suspicious.",lesson:"Urgency and legal pressure are common social engineering tactics."},
+
+  {type:"phishing",difficulty:"easy",category:"PASSWORD RESET",from:"Microsoft Support <support@microsoft-login-secure.net>",reply:"reset@microsoft-login-secure.net",subject:"Password Expiring Today",body:"Your Microsoft 365 password expires today. Verify your account now to avoid losing access.",sender:"Lookalike domain pretending to be Microsoft.",link:"Link points to microsoft-login-secure.net/auth.",attachment:"No attachment.",context:"Urgency and credential request are strong phishing signs.",lesson:"Lookalike domains and urgent login requests are major phishing indicators."},
+  {type:"phishing",difficulty:"easy",category:"DOCUSIGN",from:"DocuSign <secure@docusign.documents-review.com>",reply:"secure@docusign.documents-review.com",subject:"Document waiting for signature",body:"A confidential document is waiting. Review within 2 hours or the request will expire.",sender:"Brand impersonation with non official domain.",link:"Link goes to documents-review.com/signin.",attachment:"No attachment.",context:"Fake brand domain plus urgency makes this phishing.",lesson:"Brand impersonation often relies on domains that look close but are not official."},
+  {type:"phishing",difficulty:"easy",category:"QR PHISHING",from:"IT Service Desk <it-helpdesk@sccyber-support.com>",reply:"support@sccyber-support.com",subject:"Scan QR code to keep Teams active",body:"Your Teams access requires reactivation. Scan the QR code and sign in to continue.",sender:"External support domain pretending to be internal IT.",link:"QR code resolves to sccyber-support.com/login.",attachment:"Embedded QR image found.",context:"QR code hides the destination until scanned.",lesson:"QR phishing hides malicious links from normal visual checks."},
+  {type:"phishing",difficulty:"easy",category:"MFA FATIGUE",from:"Security Alert <mfa-alert@identity-protect.net>",reply:"mfa-alert@identity-protect.net",subject:"MFA failed. Approve request to stop account lock",body:"Multiple sign in attempts detected. Approve the pending request to prevent your account being locked.",sender:"Third party domain pretending to handle identity alerts.",link:"Fake MFA approval page.",attachment:"No attachment.",context:"Attackers pressure users into approving MFA prompts.",lesson:"Never approve unexpected MFA prompts. Report them immediately."},
+  {type:"phishing",difficulty:"medium",category:"HMRC",from:"HMRC Refunds <refunds@hmrc-tax-refund.co.uk>",reply:"refunds@hmrc-tax-refund.co.uk",subject:"Tax refund available",body:"You are eligible for a tax refund. Submit your bank details within 24 hours.",sender:"Fake HMRC lookalike domain.",link:"Link asks for banking details.",attachment:"No attachment.",context:"Money offer plus urgency and bank details request.",lesson:"Financial reward emails asking for bank details are high risk."},
+  {type:"phishing",difficulty:"medium",category:"DELIVERY SCAM",from:"DPD Delivery <tracking@dpd-redelivery-pay.com>",reply:"tracking@dpd-redelivery-pay.com",subject:"Missed delivery fee",body:"Your parcel is held. Pay £1.99 redelivery fee to release it.",sender:"Lookalike delivery domain.",link:"Payment page is not official DPD.",attachment:"No attachment.",context:"Small payment request used to steal card details.",lesson:"Delivery scams often use small fees to capture payment details."},
+  {type:"phishing",difficulty:"medium",category:"FAKE IT",from:"IT Admin <admin@sccyber-login.com>",reply:"admin@sccyber-login.com",subject:"Mailbox storage full",body:"Your mailbox is full. Sign in to increase storage or incoming mail will stop.",sender:"Fake domain pretending to be company IT.",link:"Link points to fake webmail portal.",attachment:"No attachment.",context:"Threat of losing email access pressures the user.",lesson:"Storage warnings that demand sign in are common credential theft attempts."},
+  {type:"phishing",difficulty:"medium",category:"FAKE SHAREPOINT",from:"SharePoint <no-reply@sharepoint-online-review.com>",reply:"no-reply@sharepoint-online-review.com",subject:"Secure file shared",body:"A secure file has been shared with you. Sign in to view before it expires.",sender:"Fake SharePoint domain.",link:"Credential capture page.",attachment:"No attachment.",context:"Brand impersonation and expiry pressure.",lesson:"File share phishing often imitates Microsoft services."},
+  {type:"phishing",difficulty:"hard",category:"THREAD HIJACK",from:"Aisha Khan <aisha@trustedtraining.co.uk>",reply:"aisha@trustedtraining.co.uk",subject:"Re: Slides",body:"Just adding the final file here. Please open this version instead as the last one had an error.",sender:"Known sender in real thread.",link:"No link found.",attachment:"Attachment: final_slides.scr.",context:"Real thread but dangerous executable attachment.",lesson:"Thread hijacking abuses trust from real conversations."},
+  {type:"phishing",difficulty:"hard",category:"BEC",from:"Aman <aman@mietschool.org>",reply:"aman.schoolboard@gmail.com",subject:"Urgent payment instruction",body:"Please hold the current payment and use the new details below. The board needs this sorted before close of business.",sender:"Display name known but reply address is Gmail.",link:"No links found.",attachment:"No attachment.",context:"Urgent payment change from mismatched address.",lesson:"Business email compromise often uses known names with changed reply paths."},
+  {type:"phishing",difficulty:"hard",category:"AI SPEAR PHISH",from:"Kashif Ashraf <kashif@investmentnetwork.co.uk>",reply:"kashif@investmentnetwork.co.uk",subject:"Follow up from our funding discussion",body:"Sham, great speaking earlier. I have prepared a secure investor access pack. Please sign in before our call.",sender:"Looks targeted and well written.",link:"Link points to investor-access-review.com, not the sender domain.",attachment:"No attachment.",context:"Highly personalised but wrong destination domain.",lesson:"AI phishing can be polished and personalised. Links still reveal risk."},
+  {type:"phishing",difficulty:"hard",category:"OAUTH CONSENT",from:"Microsoft App Review <app-review@microsoft365-securitycentre.com>",reply:"app-review@microsoft365-securitycentre.com",subject:"Approve app permissions",body:"A security app requires permission to protect your account. Approve access to continue.",sender:"Fake Microsoft security domain.",link:"OAuth consent page requests mailbox access.",attachment:"No attachment.",context:"Attackers abuse consent screens to gain access without passwords.",lesson:"OAuth consent phishing grants access even without stealing a password."}
 ];
 
 let deck = [];
@@ -156,6 +64,8 @@ let threatsStopped = 0;
 let lives = MAX_LIVES;
 let gameOver = false;
 let lockedDecision = false;
+let lastRole = "INTERN";
+let weakness = {};
 
 const startScreen = document.getElementById("startScreen");
 const gameScreen = document.getElementById("gameScreen");
@@ -182,194 +92,39 @@ const ladder = document.getElementById("ladder");
 const wrongSkullOverlay = document.getElementById("wrongSkullOverlay");
 const heartLoss = document.getElementById("heartLoss");
 
-function shuffle(items){
-  const copy = [...items];
-  for(let i = copy.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
+const promo = document.createElement("div");
+promo.className = "promotion-banner";
+document.body.appendChild(promo);
 
-function formatTime(seconds){
-  const m = String(Math.floor(seconds / 60)).padStart(2,"0");
-  const s = String(seconds % 60).padStart(2,"0");
-  return `${m}:${s}`;
-}
+const promoStyle = document.createElement("style");
+promoStyle.textContent = `.promotion-banner{position:fixed;left:50%;top:48%;transform:translate(-50%,-50%) scale(.7);z-index:10001;pointer-events:none;opacity:0;background:linear-gradient(135deg,rgba(27,6,64,.98),rgba(109,29,208,.98));border:2px solid #59ff9d;border-radius:16px;padding:18px 22px;text-align:center;color:#59ff9d;font-family:'Press Start 2P',cursive;line-height:1.8;box-shadow:0 0 32px rgba(89,255,157,.45)}.promotion-banner.active{animation:promoPop 1.25s ease forwards}@keyframes promoPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.85)}}`;
+document.head.appendChild(promoStyle);
 
-function currentRole(){
-  return jobLadder.reduce((current, step) => score >= step.score ? step : current, jobLadder[0]).role;
-}
+function shuffle(items){const copy=[...items];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;}
+function formatTime(seconds){const m=String(Math.floor(seconds/60)).padStart(2,"0");const s=String(seconds%60).padStart(2,"0");return `${m}:${s}`;}
+function elapsed(){return GAME_SECONDS-timeLeft;}
+function currentDifficulty(){if(elapsed()<35)return "easy";if(elapsed()<80)return "medium";return "hard";}
+function currentRole(){return jobLadder.reduce((current,step)=>score>=step.score?step:current,jobLadder[0]).role;}
+function currentRoleIndex(){return jobLadder.reduce((current,step,index)=>score>=step.score?index:current,0);}
+function renderLadder(){const active=currentRoleIndex();ladder.innerHTML=jobLadder.map((step,index)=>`<div class="ladder-step ${index===active?"active":""}">${step.role}<br>${step.score}</div>`).join("");}
+function livesDisplay(){const full=Array.from({length:lives},()=>`<span class="life-full">♥</span>`).join(" ");const empty=Array.from({length:MAX_LIVES-lives},()=>`<span class="life-empty">♥</span>`).join(" ");return `${full}${full&&empty?" ":""}${empty}`;}
+function updateHud(){timerBox.textContent=`TIME: ${formatTime(timeLeft)}`;scoreBox.textContent=`SCORE: ${score}`;rankHudBox.innerHTML=`ROLE: ${currentRole()} · ${livesDisplay()}`;countBox.textContent=`EMAILS: ${processed}`;renderLadder();}
+function showPromotionIfNeeded(){const role=currentRole();if(role!==lastRole){lastRole=role;promo.innerHTML=`PROMOTION ACHIEVED<br>${role}`;promo.classList.remove("active");void promo.offsetWidth;promo.classList.add("active");}}
+function refillDeck(){const diff=currentDifficulty();let pool=emails.filter(e=>e.difficulty===diff);if(diff==="hard")pool=emails.filter(e=>e.difficulty==="medium"||e.difficulty==="hard");deck=shuffle(pool);}
+function nextEmail(){if(gameOver)return;lockedDecision=false;if(!deck.length)refillDeck();current=deck.pop();categoryTag.textContent=current.category;difficultyTag.textContent=current.difficulty.toUpperCase();fromField.textContent=current.from;replyField.textContent=current.reply;subjectField.textContent=current.subject;bodyField.textContent=current.body;toolOutput.textContent="Use the tools before making your final decision.";feedbackBox.textContent="";feedbackBox.className="feedback";}
+function tool(type){if(!current||gameOver)return;const map={sender:current.sender,link:current.link,attachment:current.attachment,context:current.context};toolOutput.textContent=map[type];}
+function triggerBreachVisual(){wrongSkullOverlay.classList.remove("active");void wrongSkullOverlay.offsetWidth;wrongSkullOverlay.classList.add("active");setTimeout(()=>wrongSkullOverlay.classList.remove("active"),1100);}
+function triggerHeartLoss(){if(!heartLoss)return;heartLoss.classList.remove("active");void heartLoss.offsetWidth;heartLoss.classList.add("active");setTimeout(()=>heartLoss.classList.remove("active"),1000);}
+function biggestWeakness(){const entries=Object.entries(weakness).sort((a,b)=>b[1]-a[1]);return entries.length?entries[0][0]:"None identified";}
+function decide(choice){if(gameOver||!current||lockedDecision)return;lockedDecision=true;processed+=1;const isCorrect=choice===current.type;if(isCorrect){correct+=1;if(current.type!=="safe")threatsStopped+=1;score+=current.type==="phishing"?300:current.type==="suspicious"?220:150;feedbackBox.textContent=`Correct. ${current.lesson}`;feedbackBox.className="feedback good";updateHud();showPromotionIfNeeded();setTimeout(nextEmail,750);return;}wrong+=1;lives=Math.max(0,lives-1);score=Math.max(0,score-100);weakness[current.category]=(weakness[current.category]||0)+1;feedbackBox.innerHTML=`Wrong. This was ${current.type.toUpperCase()}. ${current.lesson} Lives remaining: ${livesDisplay()}`;feedbackBox.className="feedback bad";updateHud();triggerHeartLoss();setTimeout(triggerBreachVisual,250);if(lives<=0){setTimeout(()=>endGame(true),1250);return;}setTimeout(nextEmail,1200);}
+function startGame(){deck=[];timeLeft=GAME_SECONDS;score=0;processed=0;correct=0;wrong=0;threatsStopped=0;lives=MAX_LIVES;gameOver=false;lockedDecision=false;lastRole="INTERN";weakness={};wrongSkullOverlay.classList.remove("active");if(heartLoss)heartLoss.classList.remove("active");startScreen.classList.add("hidden");endScreen.classList.add("hidden");gameScreen.classList.remove("hidden");updateHud();nextEmail();clearInterval(timer);timer=setInterval(()=>{timeLeft-=1;updateHud();if(timeLeft<=0)endGame(false);},1000);}
+function endGame(breached){if(gameOver)return;gameOver=true;clearInterval(timer);wrongSkullOverlay.classList.remove("active");if(heartLoss)heartLoss.classList.remove("active");gameScreen.classList.add("hidden");endScreen.classList.remove("hidden");const accuracy=processed?Math.round((correct/processed)*100):0;const role=currentRole();endTitle.textContent=breached?"BREACH CONFIRMED":"INVESTIGATION COMPLETE";rankBox.textContent=`ROLE REACHED: ${role}`;endStats.innerHTML=`Score: ${score}<br>Accuracy: ${accuracy}%<br>Emails investigated: ${processed}<br>Correct decisions: ${correct}<br>Wrong decisions: ${wrong}<br>Threats stopped: ${threatsStopped}<br>Biggest weakness: ${biggestWeakness()}<br>Lives remaining: ${livesDisplay()}<br>Time remaining: ${formatTime(Math.max(0,timeLeft))}`;endLesson.textContent=breached?"The breach happened after three poor decisions. Check sender domains, links, attachments and context before deciding.":`You survived the 2 minute investigation and finished as ${role}. CISO is reachable, but only with speed and accuracy.`;}
 
-function currentRoleIndex(){
-  return jobLadder.reduce((current, step, index) => score >= step.score ? index : current, 0);
-}
-
-function renderLadder(){
-  const activeIndex = currentRoleIndex();
-  ladder.innerHTML = jobLadder.map((step, index) => `<div class="ladder-step ${index === activeIndex ? "active" : ""}">${step.role}<br>${step.score}</div>`).join("");
-}
-
-function livesDisplay(){
-  const full = Array.from({length:lives}, () => `<span class="life-full">♥</span>`).join(" ");
-  const empty = Array.from({length:MAX_LIVES - lives}, () => `<span class="life-empty">♥</span>`).join(" ");
-  return `${full}${full && empty ? " " : ""}${empty}`;
-}
-
-function updateHud(){
-  timerBox.textContent = `TIME: ${formatTime(timeLeft)}`;
-  scoreBox.textContent = `SCORE: ${score}`;
-  rankHudBox.innerHTML = `ROLE: ${currentRole()} · ${livesDisplay()}`;
-  countBox.textContent = `EMAILS: ${processed}`;
-  renderLadder();
-}
-
-function nextEmail(){
-  if(gameOver) return;
-  lockedDecision = false;
-  if(!deck.length) deck = shuffle(emails);
-  current = deck.pop();
-
-  categoryTag.textContent = current.category;
-  difficultyTag.textContent = "INVESTIGATE";
-  fromField.textContent = current.from;
-  replyField.textContent = current.reply;
-  subjectField.textContent = current.subject;
-  bodyField.textContent = current.body;
-  toolOutput.textContent = "Use the tools before making your final decision.";
-  feedbackBox.textContent = "";
-  feedbackBox.className = "feedback";
-}
-
-function tool(type){
-  if(!current || gameOver) return;
-  const map = {
-    sender: current.sender,
-    link: current.link,
-    attachment: current.attachment,
-    context: current.context
-  };
-  toolOutput.textContent = map[type];
-}
-
-function triggerBreachVisual(){
-  wrongSkullOverlay.classList.remove("active");
-  void wrongSkullOverlay.offsetWidth;
-  wrongSkullOverlay.classList.add("active");
-
-  setTimeout(() => {
-    wrongSkullOverlay.classList.remove("active");
-  }, 1100);
-}
-
-function triggerHeartLoss(){
-  if(!heartLoss) return;
-  heartLoss.classList.remove("active");
-  void heartLoss.offsetWidth;
-  heartLoss.classList.add("active");
-  setTimeout(() => heartLoss.classList.remove("active"), 1000);
-}
-
-function decide(choice){
-  if(gameOver || !current || lockedDecision) return;
-  lockedDecision = true;
-
-  processed += 1;
-  const isCorrect = choice === current.type;
-
-  if(isCorrect){
-    correct += 1;
-    if(current.type !== "safe") threatsStopped += 1;
-    score += current.type === "phishing" ? 300 : current.type === "suspicious" ? 220 : 150;
-    feedbackBox.textContent = `Correct. ${current.lesson}`;
-    feedbackBox.className = "feedback good";
-    updateHud();
-    setTimeout(nextEmail, 850);
-    return;
-  }
-
-  wrong += 1;
-  lives = Math.max(0, lives - 1);
-  score = Math.max(0, score - 100);
-  feedbackBox.innerHTML = `Wrong. This was ${current.type.toUpperCase()}. ${current.lesson} Lives remaining: ${livesDisplay()}`;
-  feedbackBox.className = "feedback bad";
-  updateHud();
-  triggerHeartLoss();
-  setTimeout(triggerBreachVisual, 280);
-
-  if(lives <= 0){
-    setTimeout(() => endGame(true), 1250);
-    return;
-  }
-
-  setTimeout(nextEmail, 1250);
-}
-
-function startGame(){
-  deck = shuffle(emails);
-  timeLeft = GAME_SECONDS;
-  score = 0;
-  processed = 0;
-  correct = 0;
-  wrong = 0;
-  threatsStopped = 0;
-  lives = MAX_LIVES;
-  gameOver = false;
-  lockedDecision = false;
-  wrongSkullOverlay.classList.remove("active");
-  if(heartLoss) heartLoss.classList.remove("active");
-
-  startScreen.classList.add("hidden");
-  endScreen.classList.add("hidden");
-  gameScreen.classList.remove("hidden");
-  updateHud();
-  nextEmail();
-
-  clearInterval(timer);
-  timer = setInterval(() => {
-    timeLeft -= 1;
-    updateHud();
-    if(timeLeft <= 0) endGame(false);
-  }, 1000);
-}
-
-function endGame(breached){
-  if(gameOver) return;
-  gameOver = true;
-  clearInterval(timer);
-  wrongSkullOverlay.classList.remove("active");
-  if(heartLoss) heartLoss.classList.remove("active");
-  gameScreen.classList.add("hidden");
-  endScreen.classList.remove("hidden");
-
-  const accuracy = processed ? Math.round((correct / processed) * 100) : 0;
-  const role = currentRole();
-
-  endTitle.textContent = breached ? "BREACH CONFIRMED" : "INVESTIGATION COMPLETE";
-  rankBox.textContent = `ROLE REACHED: ${role}`;
-  endStats.innerHTML = `
-    Score: ${score}<br>
-    Accuracy: ${accuracy}%<br>
-    Emails investigated: ${processed}<br>
-    Correct decisions: ${correct}<br>
-    Wrong decisions: ${wrong}<br>
-    Threats stopped: ${threatsStopped}<br>
-    Lives remaining: ${livesDisplay()}<br>
-    Time remaining: ${formatTime(Math.max(0,timeLeft))}
-  `;
-  endLesson.textContent = breached
-    ? "The breach happened after three poor decisions. Check sender domains, links, attachments and context before deciding."
-    : `You survived the 2 minute investigation and finished as ${role}. The higher your score, the higher your cybersecurity role.`;
-}
-
-startBtn.addEventListener("click", startGame);
-playAgainBtn.addEventListener("click", startGame);
-document.getElementById("senderBtn").addEventListener("click", () => tool("sender"));
-document.getElementById("linkBtn").addEventListener("click", () => tool("link"));
-document.getElementById("attachmentBtn").addEventListener("click", () => tool("attachment"));
-document.getElementById("contextBtn").addEventListener("click", () => tool("context"));
-document.querySelectorAll(".decision-btn").forEach(btn => {
-  btn.addEventListener("click", () => decide(btn.dataset.choice));
-});
-
+startBtn.addEventListener("click",startGame);
+playAgainBtn.addEventListener("click",startGame);
+document.getElementById("senderBtn").addEventListener("click",()=>tool("sender"));
+document.getElementById("linkBtn").addEventListener("click",()=>tool("link"));
+document.getElementById("attachmentBtn").addEventListener("click",()=>tool("attachment"));
+document.getElementById("contextBtn").addEventListener("click",()=>tool("context"));
+document.querySelectorAll(".decision-btn").forEach(btn=>btn.addEventListener("click",()=>decide(btn.dataset.choice)));
 renderLadder();
