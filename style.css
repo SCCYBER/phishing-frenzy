@@ -1,0 +1,234 @@
+:root{
+  --bg:#090216;
+  --panel:#12042a;
+  --panel2:#1b0640;
+  --purple:#a94cff;
+  --purple2:#6d1dd0;
+  --green:#59ff9d;
+  --red:#ff3b6b;
+  --amber:#ffd44d;
+  --text:#f5efff;
+  --muted:#b9a8d5;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  padding:10px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Share Tech Mono', monospace;
+}
+
+.bg-grid,.bg-scanlines{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+.bg-grid{
+  background:
+    linear-gradient(rgba(169,76,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(89,255,157,.05) 1px, transparent 1px);
+  background-size:28px 28px;
+}
+
+.bg-scanlines{
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 2px,transparent 4px);
+}
+
+.game-shell{
+  position:relative;
+  z-index:2;
+  max-width:1080px;
+  margin:0 auto;
+  background:linear-gradient(180deg,rgba(18,4,42,.97),rgba(10,2,22,.98));
+  border:2px solid rgba(169,76,255,.24);
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 0 42px rgba(109,29,208,.28);
+}
+
+.hidden{display:none!important}
+
+.start-screen,.end-screen{
+  min-height:640px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  gap:14px;
+  padding:20px;
+}
+
+.brand-mark{
+  font-family:'Press Start 2P', cursive;
+  color:var(--green);
+  font-size:18px;
+  text-shadow:0 0 14px var(--green);
+}
+
+.badge,.section-title,.tag,.difficulty{
+  font-family:'Press Start 2P', cursive;
+  color:var(--amber);
+  font-size:9px;
+  line-height:1.6;
+}
+
+h1,h2{
+  font-family:'Press Start 2P', cursive;
+  color:var(--purple);
+  line-height:1.45;
+  text-shadow:0 0 14px var(--purple);
+}
+
+.start-screen p{
+  max-width:720px;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1.6;
+}
+
+.primary-btn,.tool-btn,.decision-btn{
+  border:none;
+  border-radius:12px;
+  padding:12px 14px;
+  cursor:pointer;
+  color:#fff;
+  font-family:'Press Start 2P', cursive;
+  font-size:9px;
+  line-height:1.55;
+}
+
+.primary-btn,.tool-btn{
+  background:linear-gradient(90deg,var(--purple2),var(--purple));
+}
+
+.primary-btn:hover,.tool-btn:hover,.decision-btn:hover{transform:translateY(-1px)}
+
+.hud{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.hud-box{
+  background:var(--panel2);
+  border:1px solid rgba(89,255,157,.2);
+  border-radius:12px;
+  padding:10px 8px;
+  text-align:center;
+  color:var(--green);
+  font-family:'Press Start 2P', cursive;
+  font-size:8px;
+  line-height:1.7;
+}
+
+.hud-box.risk{color:var(--amber)}
+.hud-box.danger{color:var(--red);border-color:rgba(255,59,107,.45)}
+
+.email-card,.tools-card,.decision-card{
+  background:rgba(12,3,30,.93);
+  border:1px solid rgba(169,76,255,.18);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:10px;
+}
+
+.email-topline{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.email-row{
+  display:grid;
+  grid-template-columns:110px 1fr;
+  gap:8px;
+  padding:8px;
+  border-bottom:1px solid rgba(89,255,157,.08);
+}
+
+.email-row span{
+  color:var(--amber);
+  font-family:'Press Start 2P', cursive;
+  font-size:8px;
+}
+
+.email-row strong{
+  color:#fff;
+  word-break:break-word;
+}
+
+.email-body{
+  margin-top:10px;
+  background:rgba(8,2,20,.95);
+  border:1px solid rgba(89,255,157,.14);
+  border-radius:12px;
+  padding:14px;
+  color:var(--text);
+  font-size:15px;
+  line-height:1.55;
+  min-height:110px;
+  white-space:pre-line;
+}
+
+.tools,.decisions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:8px;
+}
+
+.decisions{grid-template-columns:repeat(3,1fr)}
+
+.tool-output,.feedback{
+  margin-top:10px;
+  background:rgba(8,2,20,.95);
+  border:1px solid rgba(89,255,157,.14);
+  border-radius:12px;
+  padding:12px;
+  color:var(--muted);
+  min-height:48px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.decision-btn.safe{background:linear-gradient(90deg,#168a4f,#2cdc78)}
+.decision-btn.suspicious{background:linear-gradient(90deg,#b36f00,#ffd44d);color:#160b00}
+.decision-btn.phishing{background:linear-gradient(90deg,#9b1234,#ff3b6b)}
+
+.feedback.good{color:var(--green);border-color:rgba(89,255,157,.4)}
+.feedback.bad{color:var(--red);border-color:rgba(255,59,107,.4)}
+
+.end-rank{
+  font-family:'Press Start 2P', cursive;
+  color:var(--green);
+  font-size:14px;
+  line-height:1.7;
+}
+
+.end-stats,.lesson{
+  max-width:760px;
+  background:rgba(8,2,20,.95);
+  border:1px solid rgba(89,255,157,.16);
+  border-radius:14px;
+  padding:14px;
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.6;
+}
+
+@media(max-width:900px){
+  .hud{grid-template-columns:repeat(2,1fr)}
+  .tools{grid-template-columns:repeat(2,1fr)}
+  .decisions{grid-template-columns:1fr}
+  .email-row{grid-template-columns:1fr}
+  .start-screen,.end-screen{min-height:560px}
+}
