@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCCYBER - Phishing Frenzy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-scanlines"></div>
+
+  <main class="game-shell">
+    <section class="start-screen" id="startScreen">
+      <div class="brand-mark">SCCYBER</div>
+      <div class="badge">ARCADE INVESTIGATION SIMULATION</div>
+      <h1>PHISHING FRENZY</h1>
+      <p>You have 2 minutes to investigate emails and decide what is safe, suspicious or phishing.</p>
+      <button class="primary-btn" id="startBtn">START INVESTIGATION</button>
+    </section>
+
+    <section class="game-screen hidden" id="gameScreen">
+      <header class="hud">
+        <div class="hud-box" id="timerBox">TIME: 02:00</div>
+        <div class="hud-box" id="scoreBox">SCORE: 0</div>
+        <div class="hud-box risk" id="riskBox">BREACH RISK: 0%</div>
+        <div class="hud-box" id="countBox">EMAILS: 0</div>
+      </header>
+
+      <section class="email-card">
+        <div class="email-topline">
+          <div class="tag" id="categoryTag">INBOX</div>
+          <div class="difficulty" id="difficultyTag">NORMAL</div>
+        </div>
+
+        <div class="email-row"><span>FROM</span><strong id="fromField"></strong></div>
+        <div class="email-row"><span>REPLY TO</span><strong id="replyField"></strong></div>
+        <div class="email-row"><span>SUBJECT</span><strong id="subjectField"></strong></div>
+
+        <div class="email-body" id="bodyField"></div>
+      </section>
+
+      <section class="tools-card">
+        <div class="section-title">INVESTIGATION TOOLS</div>
+        <div class="tools">
+          <button class="tool-btn" id="senderBtn">INSPECT SENDER</button>
+          <button class="tool-btn" id="linkBtn">CHECK LINKS</button>
+          <button class="tool-btn" id="attachmentBtn">INSPECT ATTACHMENT</button>
+          <button class="tool-btn" id="contextBtn">VERIFY CONTEXT</button>
+        </div>
+        <div class="tool-output" id="toolOutput">Select a tool before deciding.</div>
+      </section>
+
+      <section class="decision-card">
+        <div class="section-title">DECISION</div>
+        <div class="decisions">
+          <button class="decision-btn safe" data-choice="safe">SAFE</button>
+          <button class="decision-btn suspicious" data-choice="suspicious">SUSPICIOUS</button>
+          <button class="decision-btn phishing" data-choice="phishing">PHISHING</button>
+        </div>
+        <div class="feedback" id="feedbackBox"></div>
+      </section>
+    </section>
+
+    <section class="end-screen hidden" id="endScreen">
+      <div class="brand-mark">SCCYBER</div>
+      <h2 id="endTitle">INVESTIGATION COMPLETE</h2>
+      <div class="end-rank" id="rankBox">RANK: ANALYST</div>
+      <div class="end-stats" id="endStats"></div>
+      <div class="lesson" id="endLesson"></div>
+      <button class="primary-btn" id="playAgainBtn">PLAY AGAIN</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
