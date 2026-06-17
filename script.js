@@ -1,4 +1,5 @@
 const GAME_SECONDS = 120;
+const MAX_LIVES = 3;
 
 const jobLadder = [
   "INTERN",
@@ -150,9 +151,12 @@ let timer = null;
 let score = 0;
 let processed = 0;
 let correct = 0;
+let wrong = 0;
 let threatsStopped = 0;
 let ladderIndex = 0;
+let lives = MAX_LIVES;
 let gameOver = false;
+let lockedDecision = false;
 
 const startScreen = document.getElementById("startScreen");
 const gameScreen = document.getElementById("gameScreen");
@@ -201,16 +205,21 @@ function renderLadder(){
   ladder.innerHTML = jobLadder.map((role, index) => `<div class="ladder-step ${index === ladderIndex ? "active" : ""}">${role}</div>`).join("");
 }
 
+function livesDisplay(){
+  return "♥".repeat(lives) + "♡".repeat(MAX_LIVES - lives);
+}
+
 function updateHud(){
   timerBox.textContent = `TIME: ${formatTime(timeLeft)}`;
   scoreBox.textContent = `SCORE: ${score}`;
-  rankHudBox.textContent = `ROLE: ${currentRole()}`;
+  rankHudBox.textContent = `ROLE: ${currentRole()} · ${livesDisplay()}`;
   countBox.textContent = `EMAILS: ${processed}`;
   renderLadder();
 }
 
 function nextEmail(){
   if(gameOver) return;
+  lockedDecision = false;
   if(!deck.length) deck = shuffle(emails);
   current = deck.pop();
 
@@ -226,7 +235,7 @@ function nextEmail(){
 }
 
 function tool(type){
-  if(!current) return;
+  if(!current || gameOver) return;
   const map = {
     sender: current.sender,
     link: current.link,
@@ -240,10 +249,15 @@ function triggerBreachVisual(){
   wrongSkullOverlay.classList.remove("active");
   void wrongSkullOverlay.offsetWidth;
   wrongSkullOverlay.classList.add("active");
+
+  setTimeout(() => {
+    wrongSkullOverlay.classList.remove("active");
+  }, 1100);
 }
 
 function decide(choice){
-  if(gameOver || !current) return;
+  if(gameOver || !current || lockedDecision) return;
+  lockedDecision = true;
 
   processed += 1;
   const isCorrect = choice === current.type;
@@ -260,11 +274,20 @@ function decide(choice){
     return;
   }
 
-  feedbackBox.textContent = `Wrong. This was ${current.type.toUpperCase()}. ${current.lesson}`;
+  wrong += 1;
+  lives = Math.max(0, lives - 1);
+  score = Math.max(0, score - 100);
+  feedbackBox.textContent = `Wrong. This was ${current.type.toUpperCase()}. ${current.lesson} Lives remaining: ${livesDisplay()}`;
   feedbackBox.className = "feedback bad";
   updateHud();
   triggerBreachVisual();
-  setTimeout(() => endGame(true), 1300);
+
+  if(lives <= 0){
+    setTimeout(() => endGame(true), 1150);
+    return;
+  }
+
+  setTimeout(nextEmail, 1200);
 }
 
 function startGame(){
@@ -273,9 +296,13 @@ function startGame(){
   score = 0;
   processed = 0;
   correct = 0;
+  wrong = 0;
   threatsStopped = 0;
   ladderIndex = 0;
+  lives = MAX_LIVES;
   gameOver = false;
+  lockedDecision = false;
+  wrongSkullOverlay.classList.remove("active");
 
   startScreen.classList.add("hidden");
   endScreen.classList.add("hidden");
@@ -295,6 +322,7 @@ function endGame(breached){
   if(gameOver) return;
   gameOver = true;
   clearInterval(timer);
+  wrongSkullOverlay.classList.remove("active");
   gameScreen.classList.add("hidden");
   endScreen.classList.remove("hidden");
 
@@ -307,11 +335,14 @@ function endGame(breached){
     Score: ${score}<br>
     Accuracy: ${accuracy}%<br>
     Emails investigated: ${processed}<br>
+    Correct decisions: ${correct}<br>
+    Wrong decisions: ${wrong}<br>
     Threats stopped: ${threatsStopped}<br>
+    Lives remaining: ${livesDisplay()}<br>
     Time remaining: ${formatTime(Math.max(0,timeLeft))}
   `;
   endLesson.textContent = breached
-    ? "One poor judgement caused a breach. Check sender domains, links, attachments and context before deciding."
+    ? "The breach happened after three poor decisions. Check sender domains, links, attachments and context before deciding."
     : `You survived the 2 minute investigation and finished as ${role}. The longer you investigate correctly, the higher your cybersecurity role.`;
 }
 
