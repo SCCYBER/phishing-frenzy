@@ -20,6 +20,7 @@ body{
   background:var(--bg);
   color:var(--text);
   font-family:'Share Tech Mono', monospace;
+  overflow-x:hidden;
 }
 
 .bg-grid,.bg-scanlines{
@@ -55,7 +56,7 @@ body{
 .hidden{display:none!important}
 
 .start-screen,.end-screen{
-  min-height:640px;
+  min-height:650px;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -68,11 +69,11 @@ body{
 .brand-mark{
   font-family:'Press Start 2P', cursive;
   color:var(--green);
-  font-size:18px;
+  font-size:20px;
   text-shadow:0 0 14px var(--green);
 }
 
-.badge,.section-title,.tag,.difficulty{
+.badge,.section-title,.tag,.difficulty,.briefing-title{
   font-family:'Press Start 2P', cursive;
   color:var(--amber);
   font-size:9px;
@@ -86,11 +87,24 @@ h1,h2{
   text-shadow:0 0 14px var(--purple);
 }
 
-.start-screen p{
-  max-width:720px;
+h1{font-size:clamp(26px,4vw,52px)}
+
+.start-lead{
+  max-width:760px;
+  color:var(--text);
+  font-size:18px;
+  line-height:1.5;
+}
+
+.briefing-card{
+  max-width:760px;
+  background:rgba(8,2,20,.95);
+  border:1px solid rgba(89,255,157,.18);
+  border-radius:16px;
+  padding:18px;
   color:var(--muted);
-  font-size:16px;
-  line-height:1.6;
+  font-size:15px;
+  line-height:1.55;
 }
 
 .primary-btn,.tool-btn,.decision-btn{
@@ -129,15 +143,37 @@ h1,h2{
   line-height:1.7;
 }
 
-.hud-box.risk{color:var(--amber)}
-.hud-box.danger{color:var(--red);border-color:rgba(255,59,107,.45)}
-
-.email-card,.tools-card,.decision-card{
+.ladder-card,.email-card,.tools-card,.decision-card{
   background:rgba(12,3,30,.93);
   border:1px solid rgba(169,76,255,.18);
   border-radius:14px;
   padding:12px;
   margin-bottom:10px;
+}
+
+.ladder{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+  margin-top:8px;
+}
+
+.ladder-step{
+  background:#1b0640;
+  border:1px solid rgba(169,76,255,.25);
+  border-radius:10px;
+  padding:8px 5px;
+  text-align:center;
+  color:var(--muted);
+  font-family:'Press Start 2P', cursive;
+  font-size:6.2px;
+  line-height:1.5;
+}
+
+.ladder-step.active{
+  color:var(--green);
+  border-color:var(--green);
+  box-shadow:0 0 16px rgba(89,255,157,.35);
 }
 
 .email-topline{
@@ -161,10 +197,7 @@ h1,h2{
   font-size:8px;
 }
 
-.email-row strong{
-  color:#fff;
-  word-break:break-word;
-}
+.email-row strong{color:#fff;word-break:break-word}
 
 .email-body{
   margin-top:10px;
@@ -175,7 +208,7 @@ h1,h2{
   color:var(--text);
   font-size:15px;
   line-height:1.55;
-  min-height:110px;
+  min-height:100px;
   white-space:pre-line;
 }
 
@@ -225,10 +258,31 @@ h1,h2{
   line-height:1.6;
 }
 
+.wrong-skull-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:radial-gradient(circle,rgba(255,59,107,.18),rgba(9,2,22,.97) 60%);
+}
+
+.wrong-skull-overlay.active{display:flex;animation:redFlash .45s steps(2) 4}
+
+.wrong-skull-inner{text-align:center}
+.wrong-skull-icon{font-size:140px;color:var(--red);text-shadow:0 0 25px var(--red)}
+.wrong-skull-text,.wrong-skull-laugh{font-family:'Press Start 2P', cursive;color:var(--red);line-height:1.8;text-shadow:0 0 14px var(--red)}
+.wrong-skull-laugh{color:#fff;font-size:14px}
+
+@keyframes redFlash{0%,100%{opacity:1}50%{opacity:.35}}
+
 @media(max-width:900px){
   .hud{grid-template-columns:repeat(2,1fr)}
   .tools{grid-template-columns:repeat(2,1fr)}
   .decisions{grid-template-columns:1fr}
   .email-row{grid-template-columns:1fr}
+  .ladder{grid-template-columns:repeat(2,1fr)}
   .start-screen,.end-screen{min-height:560px}
+  .wrong-skull-icon{font-size:95px}
 }
