@@ -1,5 +1,14 @@
 const GAME_SECONDS = 120;
-const MAX_RISK = 100;
+
+const jobLadder = [
+  "INTERN",
+  "TRAINEE",
+  "ANALYST",
+  "ENGINEER",
+  "SENIOR ENGINEER",
+  "SOC LEAD",
+  "CISO"
+];
 
 const emails = [
   {
@@ -10,7 +19,7 @@ const emails = [
     subject: "Password Expiring Today",
     body: "Your Microsoft 365 password expires today. Verify your account now to avoid losing access.\n\nClick here to keep your mailbox active.",
     sender: "Lookalike domain. Real Microsoft emails do not come from microsoft-login-secure.net.",
-    link: "Link points to https://microsoft-login-secure.net/auth rather than a real Microsoft domain.",
+    link: "Link points to microsoft-login-secure.net/auth rather than a real Microsoft domain.",
     attachment: "No attachment.",
     context: "Urgency plus credential request is a strong phishing pattern.",
     lesson: "Lookalike domains and urgent login requests are major phishing indicators."
@@ -139,13 +148,10 @@ let current = null;
 let timeLeft = GAME_SECONDS;
 let timer = null;
 let score = 0;
-let risk = 0;
 let processed = 0;
 let correct = 0;
-let wrong = 0;
-let stoppedThreats = 0;
-let streak = 0;
-let bestStreak = 0;
+let threatsStopped = 0;
+let ladderIndex = 0;
 let gameOver = false;
 
 const startScreen = document.getElementById("startScreen");
@@ -155,7 +161,7 @@ const startBtn = document.getElementById("startBtn");
 const playAgainBtn = document.getElementById("playAgainBtn");
 const timerBox = document.getElementById("timerBox");
 const scoreBox = document.getElementById("scoreBox");
-const riskBox = document.getElementById("riskBox");
+const rankHudBox = document.getElementById("rankHudBox");
 const countBox = document.getElementById("countBox");
 const categoryTag = document.getElementById("categoryTag");
 const difficultyTag = document.getElementById("difficultyTag");
@@ -169,6 +175,8 @@ const endTitle = document.getElementById("endTitle");
 const rankBox = document.getElementById("rankBox");
 const endStats = document.getElementById("endStats");
 const endLesson = document.getElementById("endLesson");
+const ladder = document.getElementById("ladder");
+const wrongSkullOverlay = document.getElementById("wrongSkullOverlay");
 
 function shuffle(items){
   const copy = [...items];
@@ -185,21 +193,20 @@ function formatTime(seconds){
   return `${m}:${s}`;
 }
 
-function rank(){
-  const accuracy = processed ? Math.round((correct / processed) * 100) : 0;
-  if(score >= 2600 && accuracy >= 90) return "CISO";
-  if(score >= 2000 && accuracy >= 80) return "SOC LEAD";
-  if(score >= 1400 && accuracy >= 70) return "ENGINEER";
-  if(score >= 800) return "ANALYST";
-  return "INTERN";
+function currentRole(){
+  return jobLadder[Math.min(ladderIndex, jobLadder.length - 1)];
+}
+
+function renderLadder(){
+  ladder.innerHTML = jobLadder.map((role, index) => `<div class="ladder-step ${index === ladderIndex ? "active" : ""}">${role}</div>`).join("");
 }
 
 function updateHud(){
   timerBox.textContent = `TIME: ${formatTime(timeLeft)}`;
   scoreBox.textContent = `SCORE: ${score}`;
-  riskBox.textContent = `BREACH RISK: ${risk}%`;
+  rankHudBox.textContent = `ROLE: ${currentRole()}`;
   countBox.textContent = `EMAILS: ${processed}`;
-  riskBox.classList.toggle("danger", risk >= 70);
+  renderLadder();
 }
 
 function nextEmail(){
@@ -208,12 +215,12 @@ function nextEmail(){
   current = deck.pop();
 
   categoryTag.textContent = current.category;
-  difficultyTag.textContent = current.type.toUpperCase();
+  difficultyTag.textContent = "INVESTIGATE";
   fromField.textContent = current.from;
   replyField.textContent = current.reply;
   subjectField.textContent = current.subject;
   bodyField.textContent = current.body;
-  toolOutput.textContent = "Select a tool before deciding.";
+  toolOutput.textContent = "Use the tools before making your final decision.";
   feedbackBox.textContent = "";
   feedbackBox.className = "feedback";
 }
@@ -229,6 +236,12 @@ function tool(type){
   toolOutput.textContent = map[type];
 }
 
+function triggerBreachVisual(){
+  wrongSkullOverlay.classList.remove("active");
+  void wrongSkullOverlay.offsetWidth;
+  wrongSkullOverlay.classList.add("active");
+}
+
 function decide(choice){
   if(gameOver || !current) return;
 
@@ -237,44 +250,31 @@ function decide(choice){
 
   if(isCorrect){
     correct += 1;
-    streak += 1;
-    bestStreak = Math.max(bestStreak, streak);
-    const points = current.type === "phishing" ? 220 : current.type === "suspicious" ? 170 : 120;
-    score += points + (streak * 15);
-    risk = Math.max(0, risk - 5);
-    if(current.type !== "safe") stoppedThreats += 1;
+    if(current.type !== "safe") threatsStopped += 1;
+    score += current.type === "phishing" ? 300 : current.type === "suspicious" ? 220 : 150;
+    ladderIndex = Math.min(jobLadder.length - 1, ladderIndex + 1);
     feedbackBox.textContent = `Correct. ${current.lesson}`;
     feedbackBox.className = "feedback good";
-  } else {
-    wrong += 1;
-    streak = 0;
-    const penalty = current.type === "phishing" ? 28 : current.type === "suspicious" ? 18 : 12;
-    risk = Math.min(MAX_RISK, risk + penalty);
-    score = Math.max(0, score - 100);
-    feedbackBox.textContent = `Wrong. This was ${current.type.toUpperCase()}. ${current.lesson}`;
-    feedbackBox.className = "feedback bad";
-  }
-
-  updateHud();
-  if(risk >= MAX_RISK){
-    endGame(true);
+    updateHud();
+    setTimeout(nextEmail, 850);
     return;
   }
 
-  setTimeout(nextEmail, 900);
+  feedbackBox.textContent = `Wrong. This was ${current.type.toUpperCase()}. ${current.lesson}`;
+  feedbackBox.className = "feedback bad";
+  updateHud();
+  triggerBreachVisual();
+  setTimeout(() => endGame(true), 1300);
 }
 
 function startGame(){
   deck = shuffle(emails);
   timeLeft = GAME_SECONDS;
   score = 0;
-  risk = 0;
   processed = 0;
   correct = 0;
-  wrong = 0;
-  stoppedThreats = 0;
-  streak = 0;
-  bestStreak = 0;
+  threatsStopped = 0;
+  ladderIndex = 0;
   gameOver = false;
 
   startScreen.classList.add("hidden");
@@ -299,21 +299,20 @@ function endGame(breached){
   endScreen.classList.remove("hidden");
 
   const accuracy = processed ? Math.round((correct / processed) * 100) : 0;
-  const finalRank = rank();
+  const role = currentRole();
 
   endTitle.textContent = breached ? "BREACH CONFIRMED" : "INVESTIGATION COMPLETE";
-  rankBox.textContent = `RANK: ${finalRank}`;
+  rankBox.textContent = `ROLE REACHED: ${role}`;
   endStats.innerHTML = `
     Score: ${score}<br>
     Accuracy: ${accuracy}%<br>
     Emails investigated: ${processed}<br>
-    Threats stopped: ${stoppedThreats}<br>
-    Breach risk: ${risk}%<br>
-    Best streak: ${bestStreak}
+    Threats stopped: ${threatsStopped}<br>
+    Time remaining: ${formatTime(Math.max(0,timeLeft))}
   `;
   endLesson.textContent = breached
-    ? "The breach risk reached 100%. Review sender domains, links and pressure tactics before making a decision."
-    : "Good investigation work. Phishing defence is about checking sender, context, links and attachments before trusting the message.";
+    ? "One poor judgement caused a breach. Check sender domains, links, attachments and context before deciding."
+    : `You survived the 2 minute investigation and finished as ${role}. The longer you investigate correctly, the higher your cybersecurity role.`;
 }
 
 startBtn.addEventListener("click", startGame);
@@ -325,3 +324,5 @@ document.getElementById("contextBtn").addEventListener("click", () => tool("cont
 document.querySelectorAll(".decision-btn").forEach(btn => {
   btn.addEventListener("click", () => decide(btn.dataset.choice));
 });
+
+renderLadder();
