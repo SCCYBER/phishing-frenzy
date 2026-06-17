@@ -55,6 +55,24 @@ body{
 
 .hidden{display:none!important}
 
+.logo{
+  display:block;
+  width:82px;
+  height:auto;
+  object-fit:contain;
+  margin:0 auto 6px;
+}
+
+.game-logo{
+  width:64px;
+  margin-bottom:6px;
+}
+
+.start-logo,.end-logo{
+  width:105px;
+  margin-bottom:4px;
+}
+
 .start-screen,.end-screen{
   min-height:560px;
   display:flex;
@@ -345,6 +363,8 @@ h1{font-size:clamp(20px,3vw,38px)}
 @media(max-width:900px){
   body{padding:6px}
   .game-shell{padding:8px}
+  .logo{width:70px}
+  .start-logo,.end-logo{width:92px}
   .hud{grid-template-columns:repeat(2,1fr)}
   .tools{grid-template-columns:repeat(2,1fr)}
   .decisions{grid-template-columns:1fr}
@@ -359,6 +379,8 @@ h1{font-size:clamp(20px,3vw,38px)}
 
 @media(max-height:760px) and (min-width:901px){
   .game-shell{max-width:920px}
+  .logo{width:58px}
+  .start-logo,.end-logo{width:82px}
   h1{font-size:28px}
   .hud-box{padding:6px;font-size:6.5px}
   .ladder-card,.email-card,.tools-card,.decision-card{padding:7px;margin-bottom:6px}
