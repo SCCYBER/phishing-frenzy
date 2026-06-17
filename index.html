@@ -13,33 +13,49 @@
   <div class="bg-grid"></div>
   <div class="bg-scanlines"></div>
 
+  <div class="wrong-skull-overlay" id="wrongSkullOverlay">
+    <div class="wrong-skull-inner">
+      <div class="wrong-skull-icon">☠</div>
+      <div class="wrong-skull-text">BREACH TRIGGERED</div>
+      <div class="wrong-skull-laugh">HA. HA. HA.</div>
+    </div>
+  </div>
+
   <main class="game-shell">
     <section class="start-screen" id="startScreen">
       <div class="brand-mark">SCCYBER</div>
       <div class="badge">ARCADE INVESTIGATION SIMULATION</div>
       <h1>PHISHING FRENZY</h1>
-      <p>You have 2 minutes to investigate emails and decide what is safe, suspicious or phishing.</p>
-      <button class="primary-btn" id="startBtn">START INVESTIGATION</button>
+      <p class="start-lead">Climb the cyber career ladder by investigating emails under pressure.</p>
+      <div class="briefing-card">
+        <div class="briefing-title">MISSION BRIEFING</div>
+        <p>You have 2 minutes. Each correct investigation moves you up the job title ladder.</p>
+        <p>One wrong decision causes a breach. Think before you click.</p>
+      </div>
+      <button class="primary-btn" id="startBtn">PLAY NOW</button>
     </section>
 
     <section class="game-screen hidden" id="gameScreen">
       <header class="hud">
         <div class="hud-box" id="timerBox">TIME: 02:00</div>
         <div class="hud-box" id="scoreBox">SCORE: 0</div>
-        <div class="hud-box risk" id="riskBox">BREACH RISK: 0%</div>
+        <div class="hud-box" id="rankHudBox">ROLE: INTERN</div>
         <div class="hud-box" id="countBox">EMAILS: 0</div>
       </header>
+
+      <section class="ladder-card">
+        <div class="section-title">CYBER CAREER LADDER</div>
+        <div class="ladder" id="ladder"></div>
+      </section>
 
       <section class="email-card">
         <div class="email-topline">
           <div class="tag" id="categoryTag">INBOX</div>
-          <div class="difficulty" id="difficultyTag">NORMAL</div>
+          <div class="difficulty" id="difficultyTag">INVESTIGATE</div>
         </div>
-
         <div class="email-row"><span>FROM</span><strong id="fromField"></strong></div>
         <div class="email-row"><span>REPLY TO</span><strong id="replyField"></strong></div>
         <div class="email-row"><span>SUBJECT</span><strong id="subjectField"></strong></div>
-
         <div class="email-body" id="bodyField"></div>
       </section>
 
@@ -51,11 +67,11 @@
           <button class="tool-btn" id="attachmentBtn">INSPECT ATTACHMENT</button>
           <button class="tool-btn" id="contextBtn">VERIFY CONTEXT</button>
         </div>
-        <div class="tool-output" id="toolOutput">Select a tool before deciding.</div>
+        <div class="tool-output" id="toolOutput">Use the tools before making your decision.</div>
       </section>
 
       <section class="decision-card">
-        <div class="section-title">DECISION</div>
+        <div class="section-title">FINAL DECISION</div>
         <div class="decisions">
           <button class="decision-btn safe" data-choice="safe">SAFE</button>
           <button class="decision-btn suspicious" data-choice="suspicious">SUSPICIOUS</button>
@@ -68,7 +84,7 @@
     <section class="end-screen hidden" id="endScreen">
       <div class="brand-mark">SCCYBER</div>
       <h2 id="endTitle">INVESTIGATION COMPLETE</h2>
-      <div class="end-rank" id="rankBox">RANK: ANALYST</div>
+      <div class="end-rank" id="rankBox">ROLE REACHED: INTERN</div>
       <div class="end-stats" id="endStats"></div>
       <div class="lesson" id="endLesson"></div>
       <button class="primary-btn" id="playAgainBtn">PLAY AGAIN</button>
