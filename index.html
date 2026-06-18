@@ -97,5 +97,41 @@
   </main>
 
   <script src="script.js"></script>
+  <script>
+    var sccyberPhishingAttemptSent = false;
+    function buildSccyberPhishingAttempt(){
+      var accuracyValue = processed ? Math.round((correct / processed) * 100) : 0;
+      return {
+        type: 'SCCYBER_GAME_ATTEMPT',
+        game: 'phishing-frenzy',
+        score: Number(score || 0),
+        totalQuestions: processed,
+        correct: correct,
+        wrong: wrong,
+        answered: processed,
+        accuracy: accuracyValue,
+        durationSeconds: GAME_SECONDS - timeLeft,
+        completed: gameOver,
+        passed: lives > 0,
+        role: currentRole(),
+        threatsStopped: threatsStopped,
+        biggestWeakness: biggestWeakness(),
+        createdAt: new Date().toISOString()
+      };
+    }
+    function sendSccyberPhishingAttempt(){
+      if(sccyberPhishingAttemptSent) return;
+      sccyberPhishingAttemptSent = true;
+      window.parent.postMessage(buildSccyberPhishingAttempt(), '*');
+    }
+    var oldStartGame = startGame;
+    startGame = function(){ sccyberPhishingAttemptSent = false; oldStartGame(); };
+    var oldEndGame = endGame;
+    endGame = function(breached){ oldEndGame(breached); setTimeout(sendSccyberPhishingAttempt, 600); };
+    window.addEventListener('message', function(event){
+      var data = event.data || {};
+      if(data.type === 'SCCYBER_REQUEST_ATTEMPT') sendSccyberPhishingAttempt();
+    });
+  </script>
 </body>
 </html>
