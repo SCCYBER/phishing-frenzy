@@ -21,10 +21,10 @@
         <section class="start-screen" style="max-width:760px;">
           <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="logo start-logo">
           <div class="brand-mark">SCCYBER</div>
-          <div class="badge">PREMIUM ACCESS REQUIRED</div>
+          <div class="badge">PORTAL ACCESS REQUIRED</div>
           <h1>ACCESS LOCKED</h1>
           <p class="start-lead">${message}</p>
-          <p>Please return to the SCCYBER Training Portal and log in with an active premium account.</p>
+          <p>Please return to the SCCYBER Training Portal and launch this module from your dashboard.</p>
           <a class="primary-btn" style="display:inline-block;text-decoration:none;margin-top:18px;" href="https://sccyber.github.io/Immersive-Training-Package/">RETURN TO PORTAL</a>
         </section>
       </main>
@@ -65,6 +65,11 @@
 
   async function checkPremiumAccess() {
     try {
+      if (window.top === window.self) {
+        showLocked("Direct access is not allowed.");
+        return;
+      }
+
       if (!window.supabase || !window.SCCYBER_SUPABASE_URL || !window.SCCYBER_SUPABASE_ANON_KEY) {
         showLocked("Secure access check is not available.");
         return;
