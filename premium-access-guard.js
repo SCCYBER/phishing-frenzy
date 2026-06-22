@@ -1,6 +1,19 @@
 (function () {
   document.documentElement.style.visibility = "hidden";
 
+  window.addEventListener("message", function (event) {
+    const data = event.data || {};
+
+    if (data.type !== "SCCYBER_REQUEST_ATTEMPT") return;
+
+    const finished = typeof gameOver !== "undefined" && gameOver === true;
+
+    if (!finished) {
+      event.stopImmediatePropagation();
+      event.preventDefault();
+    }
+  }, true);
+
   function showLocked(message) {
     document.documentElement.style.visibility = "visible";
     document.body.innerHTML = `
